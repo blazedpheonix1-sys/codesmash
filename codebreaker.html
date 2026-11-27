@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>CODEBREAKER — Crack the daily code</title>
+<style>
+:root{--bg:#0c1422;--panel:#152238;--panel2:#1c2d46;--line:#2b405e;--text:#f4f7fb;--muted:#9aabc2;--lime:#c8f36a;--cyan:#69d9e8;--pink:#ff7ca8;--gold:#ffd36b;--good:#75e0a0;--shadow:0 18px 50px #0005}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#243a5b 0,transparent 55%),var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+button,select{font:inherit}button{cursor:pointer}.wrap{max-width:1050px;margin:auto;padding:22px 18px 60px}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:25px}.brand{font-weight:950;letter-spacing:.12em;font-size:1.25rem}.brand span{color:var(--lime)}.topright{display:flex;align-items:center;gap:9px}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 12px;color:var(--muted);font-size:.8rem}
+.hero{text-align:center;padding:26px 12px 25px}.eyebrow{color:var(--lime);font-size:.75rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase}.hero h1{font-size:clamp(2.2rem,7vw,4.5rem);line-height:1.02;margin:12px 0 10px;letter-spacing:-.055em}.hero p{color:var(--muted);max-width:560px;margin:0 auto}
+.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:20px 0 22px}.tab,.secondary{border:1px solid var(--line);background:#142238;color:var(--text);padding:10px 15px;border-radius:12px;font-weight:750}.tab.active{background:var(--lime);color:#17220d;border-color:var(--lime)}.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:16px;align-items:start}
+.card{background:linear-gradient(160deg,#192a42,#121e31);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)}.card h2{font-size:1.05rem;margin:0 0 5px}.sub{color:var(--muted);font-size:.88rem;margin:0 0 17px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}select{background:#0d192a;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;min-width:0;flex:1}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}.stat{background:#0e1a2b;border:1px solid #263b57;border-radius:13px;padding:10px;text-align:center}.stat b{display:block;font-size:1.25rem}.stat small{color:var(--muted);font-size:.72rem}
+.guessrow{display:flex;justify-content:center;gap:9px;margin:14px 0}.slot{width:55px;height:58px;border-radius:13px;border:1px solid #405674;background:#0c192a;display:grid;place-items:center;font-size:1.65rem;font-weight:900}.slot.filled{border-color:var(--lime);color:var(--lime)}
+.keypad{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:15px 0}.key{border:1px solid #405674;background:#213651;color:var(--text);border-radius:12px;padding:12px 4px;font-weight:850;font-size:1.05rem}.key:active{transform:scale(.96)}.key:disabled{opacity:.3;cursor:not-allowed}.actions{display:flex;gap:9px;flex-wrap:wrap}.primary{background:var(--lime);color:#17220d;border:0;border-radius:12px;padding:12px 18px;font-weight:900;flex:1}.secondary{padding:11px 15px}.primary:disabled{opacity:.4;cursor:not-allowed}
+.guesses{display:grid;gap:8px;margin-top:15px}.guess{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#0e1a2b;border:1px solid #263b57;padding:10px 12px;border-radius:12px}.digits{display:flex;gap:5px}.mini{width:27px;height:29px;display:grid;place-items:center;background:#213651;border-radius:7px;font-weight:850}.feedback{font-size:.78rem;color:var(--muted);text-align:right}.feedback strong{color:var(--lime)}
+.side{display:grid;gap:16px}.legend{display:grid;gap:11px}.legendrow{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:.86rem}.dot{width:12px;height:12px;border-radius:50%;flex:none}.notice{padding:13px;border-radius:12px;background:#172b35;border:1px solid #31545a;color:#cce9e8;font-size:.85rem}
+.message{min-height:24px;color:var(--gold);font-weight:750;margin:10px 0}.result{display:none;margin-top:14px;border:1px solid #4b6332;background:#202e20;border-radius:14px;padding:14px}.result.show{display:block}.result h3{margin:0 0 5px;color:var(--lime)}.result p{margin:0;color:#d5e3c8;font-size:.9rem}
+footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:28px}
+.modalback{display:none;position:fixed;inset:0;background:#0009;z-index:5;place-items:center;padding:18px}.modalback.show{display:grid}.modal{max-width:420px;width:100%;background:#17263b;border:1px solid var(--line);border-radius:18px;padding:22px}.modal h2{margin-top:0}.modal input{width:100%;background:#0d192a;border:1px solid var(--line);color:white;border-radius:10px;padding:12px;margin:8px 0 14px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.wrap{padding:15px 12px 40px}.card{padding:16px}.slot{width:48px;height:52px}.keypad{gap:6px}.key{padding:12px 2px}.hero{padding-top:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="brand">CODE<span>BREAKER</span> ⚡</div><div class="topright"><span class="pill" id="datePill">DAILY CHALLENGE</span><span class="pill">BETA</span></div></header>
+<section class="hero"><div class="eyebrow">THINK · DECODE · CONQUER</div><h1>Can you crack<br>today's code?</h1><p>Use logic, follow the clues and uncover the secret sequence. Every guess gets you closer.</p></section>
+<nav class="tabs" aria-label="Game modes">
+<button class="tab active" data-mode="daily">Daily Breaker</button><button class="tab" data-mode="practice">Practice</button><button class="tab" data-mode="time">Time Attack</button><button class="tab" data-mode="blackbox">Black Box</button>
+</nav>
+<div class="layout">
+<main class="card">
+<h2 id="modeTitle">Today's shared challenge</h2><p class="sub" id="modeDesc">Everyone gets the same code today. Can you solve it in six guesses?</p>
+<div class="controls"><select id="difficulty" aria-label="Difficulty"><option value="easy">Easy · 3 digits</option><option value="medium" selected>Medium · 4 digits</option><option value="hard">Hard · 5 digits</option><option value="expert">Expert · 6 digits</option></select><select id="symbolMode" aria-label="Code type"><option value="numbers">Numbers</option><option value="colors">Colours</option><option value="symbols">Symbols</option></select></div>
+<div class="stats"><div class="stat"><b id="attemptStat">0/8</b><small>GUESSES</small></div><div class="stat"><b id="timerStat">00:00</b><small>TIME</small></div><div class="stat"><b id="bestStat">—</b><small>BEST</small></div></div>
+<div style="text-align:center;color:var(--muted);font-size:.82rem">YOUR CODE</div><div class="guessrow" id="slots"></div>
+<div class="keypad" id="keypad"></div>
+<div class="actions"><button class="secondary" id="clearBtn">Clear</button><button class="secondary" id="hintBtn">Get a hint</button><button class="primary" id="guessBtn" disabled>SUBMIT GUESS</button></div>
+<div class="message" id="message" role="status">Choose your first code.</div>
+<div class="result" id="result"><h3 id="resultTitle">Code cracked!</h3><p id="resultText"></p><div class="actions" style="margin-top:12px"><button class="secondary" id="shareBtn">Share result</button><button class="primary" id="newBtn">Play again</button></div></div>
+<div class="guesses" id="guesses"></div>
+</main>
+<aside class="side">
+<section class="card"><h2>How to play</h2><p class="sub">Crack the hidden sequence using the clues.</p><div class="legend">
+<div class="legendrow"><span class="dot" style="background:var(--good)"></span><span><b style="color:var(--text)">Exact match</b> — correct symbol, correct position.</span></div>
+<div class="legendrow"><span class="dot" style="background:var(--gold)"></span><span><b style="color:var(--text)">Right symbol</b> — in the code, but wrong position.</span></div>
+<div class="legendrow"><span class="dot" style="background:#64748b"></span><span><b style="color:var(--text)">Not in code</b> — symbol isn't used.</span></div>
+</div></section>
+<section class="card"><h2>Your progress</h2><p class="sub">Stats saved on this device.</p><div class="stats"><div class="stat"><b id="playedStat">0</b><small>PLAYED</small></div><div class="stat"><b id="winStat">0</b><small>WON</small></div><div class="stat"><b id="streakStat">0</b><small>STREAK</small></div></div><div class="notice">Daily Breaker uses the same puzzle for everyone on the same date. Practice creates a fresh code each time.</div></section>
+<section class="card"><h2>Daily leaderboard</h2><p class="sub">Your personal bests on this device.</p><div id="leaderboard" style="color:var(--muted);font-size:.86rem">Complete a challenge to add your score.</div></section>
+</aside>
+</div>
+<footer>CODEBREAKER · A little mystery for your everyday brain warm-up.<br>Prototype: scores and progress are stored locally in this browser.</footer>
+</div>
+<div class="modalback" id="nameModal"><div class="modal"><h2>Save your score</h2><p class="sub">Add a nickname to your local leaderboard.</p><input id="playerName" maxlength="16" placeholder="Your nickname"><button class="primary" id="saveName">Save score</button></div></div>
+<script>
+(()=>{
+const $=id=>document.getElementById(id), symbols={numbers:["1","2","3","4","5","6"],colors:["🟥","🟦","🟩","🟨","🟪","🟧"],symbols:["◆","●","▲","★","■","✦"]};
+const lengths={easy:3,medium:4,hard:5,expert:6}, maxGuesses=8;
+let mode="daily",secret=[],current=[],history=[],finished=false,startTime=0,tick=null,seconds=0,hintUsed=false,lastWon=false;
+let pendingScore=null;
+const today=new Date().toISOString().slice(0,10);
+$("datePill").textContent="DAILY · "+today;
+function seeded(seed){let h=2166136261;for(let i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619)}return()=>{h+=0x6D2B79F5;let t=h;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+function makeSecret(){let len=lengths[$("difficulty").value], pool=[...symbols[$("symbolMode").value]],rand=mode==="daily"?seeded(today+"-"+$("difficulty").value+"-"+$("symbolMode").value):Math.random;let out=[];while(out.length<len){let x=pool[Math.floor(rand()*pool.length)];if(!out.includes(x))out.push(x)}return out}
+function start(){clearInterval(tick);secret=makeSecret();current=[];history=[];finished=false;seconds=0;hintUsed=false;startTime=Date.now();$("result").classList.remove("show");$("message").textContent="Choose your first code.";render();updateStats();tick=setInterval(()=>{if(!finished){seconds=Math.floor((Date.now()-startTime)/1000);$("timerStat").textContent=formatTime(seconds)}},500)}
+function formatTime(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function render(){let len=lengths[$("difficulty").value],pool=symbols[$("symbolMode").value];$("slots").innerHTML="";for(let i=0;i<len;i++){let d=document.createElement("div");d.className="slot"+(current[i]?" filled":"");d.textContent=current[i]||"·";$("slots").append(d)}
+$("keypad").innerHTML="";pool.forEach(s=>{let b=document.createElement("button");b.className="key";b.textContent=s;b.disabled=finished||current.length>=len||current.includes(s);b.onclick=()=>{current.push(s);render()};$("keypad").append(b)});
+$("guessBtn").disabled=finished||current.length!==len;$("attemptStat").textContent=history.length+"/"+maxGuesses;$("guesses").innerHTML="";
+history.forEach((h,i)=>{let row=document.createElement("div");row.className="guess";let ds=document.createElement("div");ds.className="digits";h.guess.forEach(s=>{let m=document.createElement("span");m.className="mini";m.textContent=s;ds.append(m)});let fb=document.createElement("div");fb.className="feedback";fb.innerHTML="<strong>"+h.exact+"</strong> exact · "+h.misplaced+" misplaced";row.append(ds,fb);$("guesses").append(row)});
+}
+function feedback(g){let exact=0,remainingS=[],remainingG=[];g.forEach((x,i)=>{if(x===secret[i])exact++;else{remainingS.push(secret[i]);remainingG.push(x)}});let misplaced=0;remainingG.forEach(x=>{let i=remainingS.indexOf(x);if(i>=0){misplaced++;remainingS.splice(i,1)}});return{exact,misplaced}}
+function submit(){if(finished||current.length!==secret.length)return;let g=[...current],f=feedback(g);history.push({guess:g,...f});current=[];if(f.exact===secret.length){end(true)}else if(history.length>=maxGuesses){end(false)}else $("message").textContent="Good thinking. Use the clues to narrow it down.";render();updateStats()}
+function end(won){finished=true;lastWon=won;clearInterval(tick);seconds=Math.floor((Date.now()-startTime)/1000);$("timerStat").textContent=formatTime(seconds);$("result").classList.add("show");$("resultTitle").textContent=won?"CODE CRACKED! 🔓":"THE CODE ESCAPED 🔒";$("resultText").textContent=won?`You cracked it in ${history.length} ${history.length===1?"guess":"guesses"} and ${formatTime(seconds)}. Brilliant logic!`:`The secret was ${secret.join(" ")}. Ready for another attempt?`;$("message").textContent=won?"Mission accomplished.":"Keep practising — every clue teaches you something.";saveResult(won);render();updateStats();if(won&&mode==="daily"){$("nameModal").classList.add("show")}}
+function saveResult(won){let data=JSON.parse(localStorage.getItem("cbStats")||'{"played":0,"wins":0,"streak":0,"lastDate":"","best":null,"scores":[]}');data.played++;if(won){data.wins++;data.streak=data.lastDate===yesterday(today)?data.streak+1:(data.lastDate===today?data.streak:1);data.lastDate=today;let score={name:"Player",guesses:history.length,time:seconds,date:today};data.scores.push(score);data.scores.sort((a,b)=>a.guesses-b.guesses||a.time-b.time);data.scores=data.scores.slice(0,5);if(!data.best||history.length<data.best)data.best=history.length}localStorage.setItem("cbStats",JSON.stringify(data));pendingScore=data}
+function yesterday(d){let x=new Date(d+"T12:00:00");x.setDate(x.getDate()-1);return x.toISOString().slice(0,10)}
+function updateStats(){let d=JSON.parse(localStorage.getItem("cbStats")||'{"played":0,"wins":0,"streak":0,"best":null,"scores":[]}');$("playedStat").textContent=d.played;$("winStat").textContent=d.wins;$("streakStat").textContent=d.streak;$("bestStat").textContent=d.best??"—";$("leaderboard").innerHTML=d.scores.length?d.scores.map((s,i)=>`${i+1}. <b style="color:var(--text)">${escapeHtml(s.name)}</b> — ${s.guesses} guesses, ${formatTime(s.time)}`).join("<br>"):"Complete a daily challenge to add your score."}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function setMode(m){mode=m;document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.mode===m));$("modeTitle").textContent={daily:"Today's shared challenge",practice:"Practice mode",time:"Time Attack",blackbox:"The Black Box"}[m];$("modeDesc").textContent={daily:"Everyone gets the same code today. Can you solve it in eight guesses?",practice:"Take your time and sharpen your code-cracking logic.",time:"Race the clock. Crack the code as quickly as you can.",blackbox:"A mysterious sequence challenge. Choose colours or symbols below."}[m];if(m==="blackbox")$("symbolMode").value="symbols";start()}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+$("difficulty").onchange=start;$("symbolMode").onchange=start;
+$("guessBtn").onclick=submit;$("clearBtn").onclick=()=>{current=[];render()};
+$("hintBtn").onclick=()=>{if(finished)return;hintUsed=true;let unknown=secret.filter((s,i)=>!history.some(h=>h.guess[i]===s));$("message").textContent="Hint: The secret contains "+secret[0]+" somewhere in the sequence.";};
+$("newBtn").onclick=()=>start();
+$("shareBtn").onclick=()=>{let txt=`CODEBREAKER ⚡ Daily ${today}\n${lastWon?"Cracked in "+history.length+" guesses":"Not cracked today"} · ${formatTime(seconds)}\nCan you beat my result?`;if(navigator.share)navigator.share({title:"CODEBREAKER",text:txt}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>$("message").textContent="Result copied — challenge a friend!");else $("message").textContent=txt};
+$("saveName").onclick=()=>{let name=$("playerName").value.trim()||"Player";let d=JSON.parse(localStorage.getItem("cbStats")||"{}");if(d.scores?.length){let s=d.scores[d.scores.length-1];s.name=name;d.scores.sort((a,b)=>a.guesses-b.guesses||a.time-b.time);localStorage.setItem("cbStats",JSON.stringify(d))}$("nameModal").classList.remove("show");updateStats()};
+$("nameModal").addEventListener("click",e=>{if(e.target===$("nameModal"))$("nameModal").classList.remove("show")});
+document.addEventListener("keydown",e=>{if(e.key==="Backspace"){current.pop();render()}else if(e.key==="Enter")submit();else if(/^[1-6]$/.test(e.key)&&$("symbolMode").value==="numbers"){let s=e.key;if(symbols.numbers.includes(s)&&!current.includes(s)&&current.length<secret.length){current.push(s);render()}}});
+updateStats();start();
+})();
+</script>
+</body>
+</html>
